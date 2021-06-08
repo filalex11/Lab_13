@@ -12,8 +12,7 @@ int main () {
 	while (b.input ()) {
 		printf ("ERROR! COMPONENTS OF THE BINARY VECTOR MUST BE 1 OR 0\n");
 	}
-	BinVect c;
-	c = b + a;
+	BinVect c = a + b;
 	c.output ();
 	return 0;
 }

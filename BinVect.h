@@ -9,6 +9,7 @@ public:
 	~BinVect (void);
 	char input (void);
 	void output (void);
+	BinVect (const BinVect &v);
 	BinVect& operator = (BinVect &v);
 	BinVect& operator + (BinVect &v);
 	BinVect& operator += (BinVect &v); 
