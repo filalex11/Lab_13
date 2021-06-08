@@ -11,7 +11,7 @@ public:
 	void output (void);
 	BinVect (const BinVect &v);
 	BinVect& operator = (BinVect &v);
-	BinVect& operator + (BinVect &v);
+	BinVect operator + (const BinVect &v) const;
 	BinVect& operator += (BinVect &v); 
 };
 #endif

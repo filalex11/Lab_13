@@ -75,50 +75,73 @@ BinVect& BinVect :: operator = (BinVect &v) {
 	return *this;
 }
 
-BinVect& BinVect :: operator + (BinVect &v) {
-	int i = 0;
+BinVect BinVect :: operator + (const BinVect &v) const {
 	char rank = 0;
-	//size > v.size ? BinVect
-	BinVect& res_vect (*this);
-	char tmp2[size];
-	for (int i = 0; i < v.size; ++i) {
-			tmp2[i] = v.vector[i];
-	}
-	if (size > v.size) {
-		int j = 0;
-		for (i = 0; i < size; ++i) {
-			if (i < (size - v.size)) {
-				tmp2[i] = 0;
-			} else {
-				tmp2[i] = v.vector[j];
-				++j;
+	BinVect result (*this);
+	if (this->size != v.size) {
+		if (this->size > v.size) {
+			int j = 0;
+			for (int i = 0; i < result.size; ++i) {
+				if (i < result.size - v.size) {
+					result.vector[i] = 0;
+				} else {
+					result.vector[i] = v.vector[j];
+					++j;
+				}
+			}
+		} else {
+			delete [] result.vector;
+			result.size = v.size;
+			result.vector = new char[result.size];
+			int j = 0;
+			for (int i = 0; i < result.size; ++i) {
+				if (i < (result.size - this->size)) {
+					result.vector[i] = 0;
+				} else {
+					result.vector[i] = this->vector[j];
+					++j;
+				}
 			}
 		}
 	}
-	
-	for (i = 0; i < size; ++i) {
-		res_vect.vector[i] += tmp2[i] + rank;
+	int i = 0;
+			/*printf ("res: %d\n", result.vector[0]);
+			printf ("res: %d\n", result.vector[1]);
+			printf ("res: %d\n", result.vector[2]);
+			printf ("res: %d\n", result.vector[3]);
+			printf ("res: %d\n", result.vector[4]);
+			printf ("\n");
+			printf ("res: %d\n", vector[0]);
+			printf ("res: %d\n", vector[1]);
+			printf ("res: %d\n", vector[2]);
+			printf ("res: %d\n", vector[3]);
+			printf ("res: %d\n", vector[4]);*/
+	for (i = result.size - 1; i >= 0; --i) {
+		if (this->size > v.size) {
+			result.vector[i] += this->vector[i] + rank;
+		} else {
+			result.vector[i] += v.vector[i] + rank;
+		}
 		rank = 0;
-		if (res_vect.vector[i] > 1) {
-			res_vect.vector[i] %= 2;
+		if (result.vector[i] > 1) {
+			result.vector[i] %= 2;
 			rank++;
 		}
 		if ((i == 0) && (rank)) {
-			char tmp[size];
-			int j = 0;
-			for (j = 0; j < size; j++) {
-				tmp[j] = res_vect.vector[j];
+			char tmp[result.size];
+			for (int j = 0; j < result.size; j++) {
+				tmp[j] = result.vector[j];
 			}
-			delete [] res_vect.vector;
-			res_vect.vector = new char[size + 1];
-			res_vect.vector[0] = 1;
+			delete [] result.vector;
+			result.vector = new char[++result.size];
+			result.vector[0] = 1;
 			int k = 1;
-			for (j = 0; j < size; j++) {
-				res_vect.vector[k++] = tmp[j];
+			for (int j = 0; j < result.size; j++) {
+				result.vector[k++] = tmp[j];
 			}
 		}
 	}
-	return res_vect;
+	return result;
 }
 
 BinVect& BinVect :: operator += (BinVect &v) {
