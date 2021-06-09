@@ -8,10 +8,18 @@ public:
 	BinVect (void);
 	~BinVect (void);
 	char input (void);
-	void output (void);
+	void output (void) const;
 	BinVect (const BinVect &v);
-	BinVect& operator = (BinVect &v);
+	BinVect& operator = (const BinVect &v);
 	BinVect operator + (const BinVect &v) const;
-	BinVect& operator += (BinVect &v); 
+	BinVect operator += (const BinVect &v);
+	bool operator > (const BinVect &v) const; 
+	bool operator == (const BinVect &v) const;
+	bool operator != (const BinVect &v) const;
+	bool operator < (const BinVect &v) const;
+	bool operator >= (const BinVect &v) const;
+	bool operator <= (const BinVect &v) const;
+	BinVect operator << (const int position);
+	BinVect operator >> (const int position);
 };
 #endif

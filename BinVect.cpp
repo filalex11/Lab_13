@@ -1,5 +1,3 @@
-#ifndef BINVECT_CPP
-#define BINVECT_CPP
 #include <stdio.h>
 #include "BinVect.h"
 BinVect :: BinVect (int s) {
@@ -41,7 +39,7 @@ char BinVect :: input (void) {
 	return 0;
 }
 
-void BinVect :: output (void) {
+void BinVect :: output (void) const{
 	printf ("Componenets of the vector:\n");
 	int i = 0;
 	while (i < size) {
@@ -59,7 +57,7 @@ BinVect :: BinVect (const BinVect &v) {
 	}
 }
 
-BinVect& BinVect :: operator = (BinVect &v) {
+BinVect& BinVect :: operator = (const BinVect &v) {
 	if (&v == this) {
 		return *this;
 	}
@@ -105,17 +103,6 @@ BinVect BinVect :: operator + (const BinVect &v) const {
 		}
 	}
 	int i = 0;
-			/*printf ("res: %d\n", result.vector[0]);
-			printf ("res: %d\n", result.vector[1]);
-			printf ("res: %d\n", result.vector[2]);
-			printf ("res: %d\n", result.vector[3]);
-			printf ("res: %d\n", result.vector[4]);
-			printf ("\n");
-			printf ("res: %d\n", vector[0]);
-			printf ("res: %d\n", vector[1]);
-			printf ("res: %d\n", vector[2]);
-			printf ("res: %d\n", vector[3]);
-			printf ("res: %d\n", vector[4]);*/
 	for (i = result.size - 1; i >= 0; --i) {
 		if (this->size > v.size) {
 			result.vector[i] += this->vector[i] + rank;
@@ -144,41 +131,75 @@ BinVect BinVect :: operator + (const BinVect &v) const {
 	return result;
 }
 
-BinVect& BinVect :: operator += (BinVect &v) {
-	int i = 0;
-	char rank = 0;
-	this->size > v.size ? v.size = this->size : this->size = v.size;
-	for (i = size - 1; i >= 0; --i) {
-		vector[i] += v.vector[i] + rank;
-		rank = 0;
-		if (vector[i] > 1) {
-			vector[i] %= 2;
-			rank++;
-		}
-		if ((i == 0) && (rank)) {
-			char tmp[size];
-			int j = 0;
-			for (j = 0; j < size; j++) {
-				tmp[j] = vector[j];
-			}
-			delete [] vector;
-			vector = new char[++size];
-			vector[0] = 1;
-			int k = 1;
-			for (j = 0; j < size; j++) {
-				vector[k++] = tmp[j];
-			}
-		}
-	}
-	return *this;
+BinVect BinVect :: operator += (const BinVect &v) {
+	return *this = *this + v;
 }
 
+bool BinVect :: operator > (const BinVect &v) const {
+	if (this->size > v.size) {
+		return true;
+	}
+	if (this->size < v.size) {
+		return false;
+	}
+	int i = 0;
+	while ((this->vector[i] == v.vector[i]) && (i < v.size)) {
+		++i;
+	}
+	if (this->vector[i] > v.vector[i]) {
+		return true;
+	}
+	return false;
+}
 
+bool BinVect :: operator == (const BinVect &v) const {
+	if (this->size != v.size) {
+		return false;
+	}
+	int i = 0;
+	while ((this->vector[i] == v.vector[i]) && (i < v.size)) {
+		++i;
+	}
+	if (i == v.size) {
+		return true;
+	}
+	return false;
+}
 
+bool BinVect :: operator != (const BinVect &v) const {
+	return !(*this == v);
+}
 
+bool BinVect :: operator < (const BinVect &v) const {
+	return v > *this;
+}
 
+bool BinVect :: operator >= (const BinVect &v) const {
+	return !(*this < v);
+}
 
+bool BinVect :: operator <= (const BinVect &v) const {
+	return !(*this > v);
+}
 
+BinVect BinVect :: operator << (const int position) {
+	int i = 0, j = 0;
+	for (i = 0; i < position; ++i) {	
+		for (j = 0; j < this->size - 1; ++j) {
+			this->vector[j] = this->vector[j + 1];
+		}
+		this->vector[j] = 0;
+	}
+	return *this;	
+}
 
-
-#endif
+BinVect BinVect :: operator >> (const int position) {
+	int i = 0, j = 0;
+	for (i = 0; i < position; ++i) {	
+		for (j = this->size; j > 0; --j) {
+			this->vector[j] = this->vector[j - 1];
+		}
+		this->vector[j] = 0;
+	}
+	return *this;	
+}
