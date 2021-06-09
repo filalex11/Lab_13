@@ -39,7 +39,7 @@ char BinVect :: input (void) {
 	return 0;
 }
 
-void BinVect :: output (void) const{
+void BinVect :: output (void) const {
 	printf ("Componenets of the vector:\n");
 	int i = 0;
 	while (i < size) {
@@ -135,6 +135,61 @@ BinVect BinVect :: operator += (const BinVect &v) {
 	return *this = *this + v;
 }
 
+BinVect BinVect :: operator - (const BinVect &v) const {
+	char rank = 1;
+	BinVect result (*this);
+	if (*this != v) {
+		if (*this > v) {
+			int j = 0;
+			for (int i = 0; i < result.size; ++i) {
+				if (i < result.size - v.size) {
+					result.vector[i] = 0;
+				} else {
+					result.vector[i] = v.vector[j];
+					++j;
+				}
+			}
+			for (int i = result.size - 1; i >= 0; --i) {
+				result.vector[i] += this->vector[i];
+				if (result.vector[i] > 1) {
+					result.vector[i] %= 2;
+				}
+			}
+			return result;
+		} else {
+			delete [] result.vector;
+			result.size = v.size;
+			result.vector = new char[result.size];
+			int j = 0;
+			for (int i = 0; i < result.size; ++i) {
+				if (i < (result.size - this->size)) {
+					result.vector[i] = 0;
+				} else {
+					result.vector[i] = this->vector[j];
+					++j;
+				}
+			}
+			for (int i = result.size - 1; i >= 0; ++i) {
+				result.vector[i] += v.vector[i] + rank;
+				rank = 0;
+				if (result.vector[i] > 1) {
+					result.vector[i] %= 2;
+					++rank;
+				}
+				result.vector[i] = !result.vector[i];
+			}
+		}	
+	}
+	for (int i = result.size - 1; i >= 0; --i) {
+		result.vector[i] = 0;
+	}
+	return result;
+}
+
+BinVect BinVect :: operator -= (const BinVect &v) {
+	return *this = *this - v;
+}
+
 bool BinVect :: operator > (const BinVect &v) const {
 	if (this->size > v.size) {
 		return true;
@@ -202,4 +257,37 @@ BinVect BinVect :: operator >> (const int position) {
 		this->vector[j] = 0;
 	}
 	return *this;	
+}
+
+char BinVect :: get (int index, int &error) const {
+	if ((index < 0) || (index >= size)) {
+		error = 1;
+		return -1;
+	} else {
+		return vector[index];
+	}
+}
+
+void BinVect :: set (int index, char value, int &error) {
+	if ((index < 0) || (index >= size)) {
+		error = 1;
+		return;
+	} else {
+		vector[index] = value;
+	}
+}
+
+int BinVect :: max_sequence (void) const {
+	int res = 0, count = 0;
+	for (int i = 0; i < this->size; ++i) {
+		if (this->vector[i] == 1) {
+			++count;
+		} else {
+			if (count > res) {
+				res = count;
+			}
+			count = 0;
+		}
+	}
+	return res;
 }
